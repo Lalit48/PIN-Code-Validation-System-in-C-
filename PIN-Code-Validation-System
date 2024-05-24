@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <conio.h>
+
+#define MAX_ATTEMPTS 3
+#define PIN_LENGTH 4
+
+// Predefined valid PIN codes
+const char *validPins[] = {
+    "1234",
+    "5678",
+    "4321",
+    "8765"
+};
+const int numValidPins = sizeof(validPins) / sizeof(validPins[0]);
+
+// Function prototypes
+int validatePin(const char *pin);
+void enterPin(char *pin);
+
+int main() {
+    char pin[PIN_LENGTH + 1];
+    int attempts = 0;
+
+    printf("PIN Code Validation System\n");
+
+    while (attempts < MAX_ATTEMPTS) {
+        printf("\nEnter your PIN: ");
+        enterPin(pin);
+
+        if (validatePin(pin)) {
+            printf("\nPIN is valid.\n");
+            return 0;
+        } else {
+            printf("\nInvalid PIN. Try again.\n");
+            attempts++;
+        }
+    }
+
+    printf("\nToo many invalid attempts. Access denied.\n");
+    return 1;
+}
+
+// Function to validate the entered PIN
+int validatePin(const char *pin) {
+    for (int i = 0; i < numValidPins; i++) {
+        if (strcmp(pin, validPins[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Function to securely enter the PIN
+void enterPin(char *pin) {
+    int i = 0;
+    char ch;
+
+    while (i < PIN_LENGTH) {
+        ch = getch(); // Get character without echoing it
+        if (ch >= '0' && ch <= '9') {
+            pin[i] = ch;
+            printf("*"); // Print asterisk instead of the character
+            i++;
+        } else if (ch == '\b' && i > 0) { // Handle backspace
+            printf("\b \b");
+            i--;
+        }
+    }
+    pin[i] = '\0'; // Null-terminate the string
+}
